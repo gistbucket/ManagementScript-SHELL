@@ -4,9 +4,9 @@
 #Copyright (c) 2024, Arkadiusz Asmus
 #
 
-#CREATING FILE WITH LOGS
-touch skrypt.log
-source config.rc
+# SET LOG FILE and ensure it exists
+LOG_FILE="script.log"
+touch "${LOG_FILE}"
 
 # CHECK IF THE USER RAN THE SCRIPT AS ROOT
 if [ "$EUID" -ne 0 ]; then
@@ -16,6 +16,8 @@ fi
 
 # Check if the 'dialog' command is available
 if ! command -v dialog &> /dev/null; then
+    # Ensure INSTALL_DIALOG_MSG is defined; provide a sensible default if not set
+    : "${INSTALL_DIALOG_MSG:="The 'dialog' package is required but not installed. Install it now? (y/n)"}"
     # Display the installation message stored in $INSTALL_DIALOG_MSG
     echo "$INSTALL_DIALOG_MSG"
     
@@ -33,6 +35,9 @@ if ! command -v dialog &> /dev/null; then
 fi
 
 if ! command -v zenity &> /dev/null; then
+    # Ensure INSTALL_ZENITY_MSG is defined; provide a sensible default if not set
+    : "${INSTALL_ZENITY_MSG:="The 'zenity' package is required but not installed. Install it now? (y/n)"}"
+    # Display the installation message stored in $INSTALL_ZENITY_MSG
     echo "$INSTALL_ZENITY_MSG"
     read -r install_zenity
     if [ "$install_zenity" == "y" ]; then
